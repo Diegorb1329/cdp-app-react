@@ -1,9 +1,11 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, lazy, Suspense } from 'react';
 import { createProcessStep } from '../services/farmProcessService';
-import { FarmMap } from './FarmMap';
 import { getFarmById } from '../services/farmService';
 import { getTreesByFarm } from '../services/treeService';
 import type { Farm, Tree } from '../lib/supabase';
+
+// Lazy load FarmMap to reduce initial bundle size (Mapbox is large)
+const FarmMap = lazy(() => import('./FarmMap').then(module => ({ default: module.FarmMap })));
 
 export interface ProcessStepFormProps {
   farmId: string;
@@ -454,13 +456,15 @@ export function ProcessStepForm({
       {/* Map */}
       {farm && location && (
         <div style={{ height: '300px', borderRadius: '8px', overflow: 'hidden', marginBottom: '1rem' }}>
-          <FarmMap
-            farm={farm}
-            mode="view"
-            selectedLocation={location}
-            initialCenter={location}
-            initialZoom={15}
-          />
+          <Suspense fallback={<div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%' }}>Loading map...</div>}>
+            <FarmMap
+              farm={farm}
+              mode="view"
+              selectedLocation={location}
+              initialCenter={location}
+              initialZoom={15}
+            />
+          </Suspense>
         </div>
       )}
 

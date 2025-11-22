@@ -20,7 +20,6 @@ function LandingPage() {
             />
           </div>
           <div className="landing-nav-links">
-            <a href="#about" className="landing-nav-link">About</a>
             <a href="#how-it-works" className="landing-nav-link">How it works</a>
             <a href="#contact" className="landing-nav-link">Contact</a>
             <Link to="/app" className="landing-cta-button">
@@ -50,25 +49,16 @@ function LandingPage() {
         </div>
       </section>
 
-      {/* About Section */}
-      <section className="about-section" id="about">
-        <div className="about-content">
-          <div className="about-text">
-            <h2 className="section-heading">For Coffee Producers</h2>
-            <p className="section-description">
-              Document every step of your production journey. Map your farm, track each tree,
-              and capture monthly evidence with geotagged photos. Generate verifiable proof
-              of your sustainable practices backed by rich data.
-            </p>
-          </div>
-          <div className="about-text">
-            <h2 className="section-heading">For Roasters</h2>
-            <p className="section-description">
-              Access complete traceability from tree to cup. View farm maps, processing methods,
-              quality scores, and monthly photo documentation. Make informed purchasing decisions
-              with unprecedented transparency.
-            </p>
-          </div>
+      {/* Problem Statement Section */}
+      <section className="problem-section">
+        <div className="problem-content">
+          <p className="problem-text">
+            Everyone wants specialty coffee with a story, but the burden falls on farmers—invisible labor, uncompensated. 
+            Big coffee uses eco certifications to greenwash while origin information gets lost, corrupted, and unverifiable. 
+            Certifications like Rainforest Alliance are too expensive for small growers, and the verification mechanisms are broken. 
+            The result? Over 60% of small farms have disappeared across Costa Rica, Brazil, Colombia, and Mexico, as aging farmers 
+            are pushed out of the specialty market without financial support. The system is failing those who grow the coffee we love.
+          </p>
         </div>
       </section>
 

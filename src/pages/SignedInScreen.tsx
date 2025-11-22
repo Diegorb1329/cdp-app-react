@@ -1,16 +1,19 @@
 import { Routes, Route, Navigate } from "react-router-dom";
 import { useEvmAddress, useIsSignedIn } from "@coinbase/cdp-hooks";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState, lazy, Suspense } from "react";
 import { createPublicClient, http, formatEther } from "viem";
 import { baseSepolia } from "viem/chains";
 import Sidebar from "../components/Sidebar";
 import Header from "../components/Header";
 import UserBalance from "../components/UserBalance";
 import EOATransaction from "../components/EOATransaction";
-import HumanityProofPage from "./HumanityProofPage";
-import FarmsPage from "./FarmsPage";
-import FarmDetailPage from "./FarmDetailPage";
-import HypercertsPage from "./HypercertsPage";
+import Loading from "../components/Loading";
+
+// Lazy load heavy pages to reduce initial bundle size
+const HumanityProofPage = lazy(() => import("./HumanityProofPage"));
+const FarmsPage = lazy(() => import("./FarmsPage"));
+const FarmDetailPage = lazy(() => import("./FarmDetailPage"));
+const HypercertsPage = lazy(() => import("./HypercertsPage"));
 
 /**
  * Create a viem client to access user's balance on the Base Sepolia network
@@ -74,14 +77,16 @@ function SignedInScreen() {
       <div className="app-main">
         <Header />
         <main className="app-content">
-          <Routes>
-            <Route path="/" element={<Navigate to="/app/wallet" replace />} />
-            <Route path="/wallet" element={<WalletPage />} />
-            <Route path="/humanity-proof" element={<HumanityProofPage />} />
-            <Route path="/farms" element={<FarmsPage />} />
-            <Route path="/farms/:farmId" element={<FarmDetailPage />} />
-            <Route path="/hypercerts" element={<HypercertsPage />} />
-          </Routes>
+          <Suspense fallback={<Loading />}>
+            <Routes>
+              <Route path="/" element={<Navigate to="/app/wallet" replace />} />
+              <Route path="/wallet" element={<WalletPage />} />
+              <Route path="/humanity-proof" element={<HumanityProofPage />} />
+              <Route path="/farms" element={<FarmsPage />} />
+              <Route path="/farms/:farmId" element={<FarmDetailPage />} />
+              <Route path="/hypercerts" element={<HypercertsPage />} />
+            </Routes>
+          </Suspense>
         </main>
       </div>
     </div>

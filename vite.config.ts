@@ -27,10 +27,11 @@ export default defineConfig({
           // Split large dependencies into separate chunks
           if (id.includes('node_modules')) {
             // Barretenberg (ZK proof library) - very large, split into separate chunk
-            if (id.includes('barretenberg') || id.includes('@aztec')) {
+            // Only load when needed (lazy loaded in HumanityProofPage)
+            if (id.includes('barretenberg') || id.includes('@aztec') || id.includes('@noir-lang')) {
               return 'barretenberg';
             }
-            // Hypercerts SDK
+            // Hypercerts SDK - only load when HypercertsPage is accessed
             if (id.includes('@hypercerts-org') || id.includes('hypercerts')) {
               return 'hypercerts';
             }
@@ -42,20 +43,39 @@ export default defineConfig({
             if (id.includes('@coinbase/cdp')) {
               return 'coinbase-cdp';
             }
-            // Mapbox
+            // Mapbox - only load when map components are used
             if (id.includes('mapbox') || id.includes('@mapbox')) {
               return 'mapbox';
             }
             // React and React DOM
-            if (id.includes('react') || id.includes('react-dom')) {
+            if (id.includes('react') || id.includes('react-dom') || id.includes('react-router')) {
               return 'react-vendor';
+            }
+            // Supabase client
+            if (id.includes('@supabase')) {
+              return 'supabase';
             }
             // Other node_modules
             return 'vendor';
           }
+          // Split large source files
+          if (id.includes('src/components/FarmMap')) {
+            return 'mapbox'; // FarmMap uses Mapbox, so bundle together
+          }
         },
       },
     },
-    chunkSizeWarningLimit: 1000, // Increase warning limit to 1MB (chunks like barretenberg are inherently large)
+    chunkSizeWarningLimit: 1500, // Increase warning limit to 1.5MB (chunks like barretenberg are inherently large)
+    target: 'esnext', // Use modern JS for better tree-shaking
+    minify: 'esbuild', // Use esbuild for faster builds (default, but explicit)
+    // Optimize chunk loading
+    cssCodeSplit: true, // Split CSS into separate files
+    sourcemap: false, // Disable sourcemaps in production to reduce size
+  },
+  // Optimize dependencies
+  optimizeDeps: {
+    include: ['react', 'react-dom', 'react-router-dom'], // Pre-bundle these
+    exclude: ['@hypercerts-org/sdk', 'mapbox-gl'], // Exclude large libs from pre-bundling (they'll be lazy loaded)
   },
 });
+

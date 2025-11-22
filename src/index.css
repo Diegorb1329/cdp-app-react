@@ -119,8 +119,13 @@
   }
 
   .about-section,
+  .problem-section,
   .landing-footer {
     background-color: #141519;
+  }
+
+  .problem-text {
+    color: #e0e0e0;
   }
 
   .footer-link-inline {
@@ -1494,6 +1499,26 @@ hr {
   background-color: #fff;
 }
 
+/* Problem Statement Section */
+.problem-section {
+  padding: 3rem 3rem;
+  background-color: #FAFAF9;
+}
+
+.problem-content {
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+.problem-text {
+  font-size: 1.25rem;
+  line-height: 1.8;
+  color: #333;
+  margin: 0;
+  text-align: center;
+  font-weight: 400;
+}
+
 .about-content {
   max-width: 1200px;
   margin: 0 auto;
@@ -1716,8 +1741,13 @@ hr {
   }
 
   .about-section,
+  .problem-section,
   .how-it-works-section {
-    padding: 4rem 1.5rem;
+    padding: 2rem 1.5rem;
+  }
+
+  .problem-text {
+    font-size: 1.125rem;
   }
 
   .version-tabs {
