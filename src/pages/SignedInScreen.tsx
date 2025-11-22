@@ -3,9 +3,9 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { createPublicClient, http, formatEther } from "viem";
 import { baseSepolia } from "viem/chains";
 
-import EOATransaction from "./EOATransaction";
-import Header from "./Header";
-import UserBalance from "./UserBalance";
+import EOATransaction from "../components/EOATransaction";
+import Header from "../components/Header";
+import UserBalance from "../components/UserBalance";
 
 /**
  * Create a viem client to access user's balance on the Base Sepolia network
@@ -45,14 +45,17 @@ function SignedInScreen() {
   return (
     <>
       <Header />
-      <main className="main flex-col-container flex-grow">
-        <div className="main-inner flex-col-container">
-          <div className="card card--user-balance">
-            <UserBalance balance={formattedBalance} />
-          </div>
-          <div className="card card--transaction">
+      <main className="dashboard">
+        <div className="dashboard-content">
+          <h1 className="dashboard-title">Your Dashboard</h1>
+          <div className="dashboard-grid">
+            <div className="dashboard-card">
+              <UserBalance balance={formattedBalance} />
+            </div>
             {isSignedIn && evmAddress && (
-              <EOATransaction balance={formattedBalance} onSuccess={getBalance} />
+              <div className="dashboard-card">
+                <EOATransaction balance={formattedBalance} onSuccess={getBalance} />
+              </div>
             )}
           </div>
         </div>
@@ -62,3 +65,4 @@ function SignedInScreen() {
 }
 
 export default SignedInScreen;
+

@@ -1,0 +1,20 @@
+CREATE TABLE IF NOT EXISTS users (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  wallet_address TEXT UNIQUE NOT NULL,
+  role TEXT CHECK (role IN ('farmer', 'tester')),
+  zk_verified BOOLEAN DEFAULT FALSE,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- Enable Row Level Security (optional but recommended)
+ALTER TABLE users ENABLE ROW LEVEL SECURITY;
+
+-- Policy: Users can read their own data
+CREATE POLICY "Users can read own data" ON users
+  FOR SELECT USING (auth.uid() = id);
+
+-- For now, allowing public insert/update via API (since we handle auth logic in API route)
+-- In production, you'd want stricter policies.
+CREATE POLICY "Enable insert for authenticated users only" ON users FOR INSERT WITH CHECK (true);
+CREATE POLICY "Enable update for users based on wallet" ON users FOR UPDATE USING (true);
+

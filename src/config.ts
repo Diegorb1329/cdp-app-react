@@ -28,7 +28,7 @@ export const CDP_CONFIG = {
       createOnLogin: solanaAccountType,
     },
   }),
-  appName: "CDP React StarterKit",
+  appName: "Coffee Traceability Platform",
   appLogoUrl: "http://localhost:3000/logo.svg",
   authMethods: ["email", "sms", "oauth:google", "oauth:apple"],
 } as Config;

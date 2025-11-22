@@ -64,3 +64,4 @@ export const IconUser = (props: Omit<SVGProps<SVGSVGElement>, "viewBox">) => {
     </SvgIcon>
   );
 };
+

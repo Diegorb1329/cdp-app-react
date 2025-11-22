@@ -35,25 +35,28 @@ function Header() {
   }, [isCopied]);
 
   return (
-    <header>
-      <div className="header-inner">
-        <div className="title-container">
-          <h1 className="site-title">CDP React StarterKit</h1>
+    <header className="app-header">
+      <div className="app-header-inner">
+        <div className="app-header-logo">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 2L2 7v10c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-10-5z"/>
+          </svg>
+          <span className="app-header-title">Coffee Traceability</span>
         </div>
-        <div className="user-info flex-row-container">
+        <div className="app-header-actions">
           {evmAddress && (
             <button
               aria-label="copy wallet address"
-              className="flex-row-container copy-address-button"
+              className="wallet-button"
               onClick={copyAddress}
             >
               {!isCopied && (
                 <>
-                  <IconUser className="user-icon user-icon--user" />
-                  <IconCopy className="user-icon user-icon--copy" />
+                  <IconUser className="wallet-icon" />
+                  <IconCopy className="wallet-icon wallet-icon--copy" />
                 </>
               )}
-              {isCopied && <IconCheck className="user-icon user-icon--check" />}
+              {isCopied && <IconCheck className="wallet-icon" />}
               <span className="wallet-address">{formatAddress(evmAddress)}</span>
             </button>
           )}
@@ -65,3 +68,4 @@ function Header() {
 }
 
 export default Header;
+

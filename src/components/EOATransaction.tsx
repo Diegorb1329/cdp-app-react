@@ -57,10 +57,10 @@ function EOATransaction(props: Props) {
   };
 
   return (
-    <>
+    <div className="transaction-container">
       {balance === undefined && (
         <>
-          <h2 className="card-title">Send a transaction</h2>
+          <h2 className="card-title">Send a Transaction</h2>
           <LoadingSkeleton className="loading--text" />
           <LoadingSkeleton className="loading--btn" />
         </>
@@ -69,8 +69,8 @@ function EOATransaction(props: Props) {
         <>
           {!transactionHash && error && (
             <>
-              <h2 className="card-title">Oops</h2>
-              <p>{error}</p>
+              <h2 className="card-title">Transaction Error</h2>
+              <p className="transaction-message">{error}</p>
               <Button className="tx-button" onClick={handleReset} variant="secondary">
                 Reset and try again
               </Button>
@@ -78,10 +78,12 @@ function EOATransaction(props: Props) {
           )}
           {!transactionHash && !error && (
             <>
-              <h2 className="card-title">Send a transaction</h2>
+              <h2 className="card-title">Send a Transaction</h2>
               {hasBalance && evmAddress && (
                 <>
-                  <p>Send 0.000001 ETH to yourself on Base Sepolia</p>
+                  <p className="transaction-description">
+                    Send 0.000001 ETH to yourself on Base Sepolia
+                  </p>
                   <SendEvmTransactionButton
                     account={evmAddress}
                     network="base-sepolia"
@@ -92,37 +94,39 @@ function EOATransaction(props: Props) {
                 </>
               )}
               {!hasBalance && (
-                <>
-                  <p>
+                <div className="transaction-info">
+                  <p className="transaction-description">
                     This example transaction sends a tiny amount of ETH from your wallet to itself.
                   </p>
-                  <p>
+                  <p className="transaction-description">
                     Get some from{" "}
                     <a
                       href="https://portal.cdp.coinbase.com/products/faucet"
                       target="_blank"
                       rel="noopener noreferrer"
+                      className="transaction-link"
                     >
                       Base Sepolia Faucet
                     </a>
                   </p>
-                </>
+                </div>
               )}
             </>
           )}
           {transactionHash && (
             <>
-              <h2 className="card-title">Transaction sent</h2>
-              <p>
-                Transaction hash:{" "}
+              <h2 className="card-title">Transaction Sent</h2>
+              <div className="transaction-success">
+                <p className="transaction-label">Transaction hash:</p>
                 <a
                   href={`https://sepolia.basescan.org/tx/${transactionHash}`}
                   target="_blank"
                   rel="noopener noreferrer"
+                  className="transaction-hash"
                 >
                   {transactionHash.slice(0, 6)}...{transactionHash.slice(-4)}
                 </a>
-              </p>
+              </div>
               <Button variant="secondary" className="tx-button" onClick={handleReset}>
                 Send another transaction
               </Button>
@@ -130,8 +134,9 @@ function EOATransaction(props: Props) {
           )}
         </>
       )}
-    </>
+    </div>
   );
 }
 
 export default EOATransaction;
+
