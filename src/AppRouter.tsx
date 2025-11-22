@@ -6,13 +6,13 @@ import App from "./App";
  * AppRouter Component
  * Defines the routing structure for the application
  * - "/" - Landing page (public)
- * - "/app" - Authenticated application
+ * - "/app/*" - Authenticated application with nested routes
  */
 function AppRouter() {
   return (
     <Routes>
       <Route path="/" element={<LandingPage />} />
-      <Route path="/app" element={<App />} />
+      <Route path="/app/*" element={<App />} />
     </Routes>
   );
 }

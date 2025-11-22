@@ -28,17 +28,23 @@ function App() {
     }
   }, [isSignedIn, evmAddress]);
 
-  return (
-    <div className="app flex-col-container flex-grow">
-      {!isInitialized && <Loading />}
-      {isInitialized && (
-        <>
-          {!isSignedIn && <SignInScreen />}
-          {isSignedIn && <SignedInScreen />}
-        </>
-      )}
-    </div>
-  );
+  if (!isInitialized) {
+    return (
+      <div className="app flex-col-container">
+        <Loading />
+      </div>
+    );
+  }
+
+  if (!isSignedIn) {
+    return (
+      <div className="app flex-col-container">
+        <SignInScreen />
+      </div>
+    );
+  }
+
+  return <SignedInScreen />;
 }
 
 export default App;

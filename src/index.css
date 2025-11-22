@@ -107,6 +107,52 @@
       repeating-linear-gradient(0deg, transparent, transparent 49px, rgba(237, 137, 54, 0.15) 49px, rgba(237, 137, 54, 0.15) 50px);
   }
 
+  /* App Layout Dark Mode */
+  .app-layout {
+    background-color: #0a0b0d;
+  }
+
+  /* Sidebar Dark Mode */
+  .sidebar {
+    background-color: #141519;
+    border-right-color: rgba(255, 255, 255, 0.08);
+  }
+
+  .sidebar-header {
+    border-bottom-color: rgba(255, 255, 255, 0.08);
+  }
+
+  .sidebar-title {
+    color: #fafafa;
+  }
+
+  .sidebar-item {
+    color: #999;
+  }
+
+  .sidebar-item--parent {
+    color: #fafafa;
+  }
+
+  .sidebar-item:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+    color: #fafafa;
+  }
+
+  .sidebar-item--active {
+    background-color: rgba(255, 255, 255, 0.08);
+    color: #fafafa;
+  }
+
+  .sidebar-item--active::before {
+    background-color: #fafafa;
+  }
+
+  /* Page Content Dark Mode */
+  .page-title {
+    color: #fafafa;
+  }
+
   /* App Header Dark Mode */
   .app-header {
     background-color: #0a0b0d;
@@ -180,6 +226,12 @@
     background-color: rgba(220, 38, 38, 0.1);
     border-color: rgba(220, 38, 38, 0.2);
   }
+
+  /* Wallet Grid Dark Mode */
+  .wallet-card {
+    background-color: #141519;
+    border-color: rgba(255, 255, 255, 0.08);
+  }
 }
 
 ::selection {
@@ -197,14 +249,18 @@ body {
   min-width: 320px;
 }
 
-body,
-#root,
-#root > div,
+#root {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+}
+
 .flex-col-container {
   display: flex;
   flex-direction: column;
   justify-content: center;
   place-items: center;
+  height: 100vh;
 }
 
 .flex-row-container {
@@ -229,17 +285,6 @@ body,
   width: 1px;
 }
 
-#root {
-  flex-grow: 1;
-  margin: 0;
-  padding: 0rem;
-  width: 100%;
-}
-
-#root > div {
-  flex-grow: 1;
-}
-
 p {
   margin: 0;
 }
@@ -259,21 +304,246 @@ hr {
 }
 
 .app {
-  height: 100%;
   color: var(--cdp-example-text-color);
   margin: 0 auto;
   width: 100%;
 }
 
+/* App Layout with Sidebar */
+.app-layout {
+  display: flex;
+  height: 100vh;
+  background-color: #FAFAF9;
+  overflow: hidden;
+}
+
+.app-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.app-content {
+  flex: 1;
+  padding: 3rem;
+  overflow-y: auto;
+  height: 100%;
+}
+
+/* Sidebar Styles */
+.sidebar {
+  width: 280px;
+  background-color: #fff;
+  border-right: 1px solid rgba(0, 0, 0, 0.08);
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow-y: auto;
+  flex-shrink: 0;
+  transition: width 0.3s ease;
+}
+
+.sidebar--collapsed {
+  width: 80px;
+}
+
+.sidebar-header {
+  padding: 2rem 1.5rem;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  position: relative;
+}
+
+.sidebar--collapsed .sidebar-header {
+  padding: 2rem 1rem;
+  justify-content: center;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.sidebar-logo-icon {
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+}
+
+.sidebar-title {
+  font-size: 1rem;
+  font-weight: 500;
+  margin: 0;
+  color: #000;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.sidebar-toggle {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.5rem;
+  color: #666;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.2s;
+  border-radius: 0.25rem;
+  margin-left: auto;
+}
+
+.sidebar--collapsed .sidebar-toggle {
+  margin-left: 0;
+}
+
+.sidebar-toggle:hover {
+  color: #000;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+
+.sidebar-nav {
+  padding: 1.5rem 0;
+  flex: 1;
+}
+
+.sidebar-section {
+  margin-bottom: 0.5rem;
+}
+
+.sidebar-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1.5rem;
+  color: #666;
+  text-decoration: none;
+  transition: all 0.2s;
+  cursor: pointer;
+  border: none;
+  background: none;
+  width: 100%;
+  font-size: 0.95rem;
+  position: relative;
+}
+
+.sidebar--collapsed .sidebar-item {
+  padding: 0.75rem;
+  justify-content: center;
+}
+
+.sidebar--collapsed .sidebar-item span {
+  display: none;
+}
+
+.sidebar-item--parent {
+  font-weight: 500;
+  color: #000;
+}
+
+.sidebar-item--child {
+  padding-left: 3.5rem;
+  font-size: 0.9rem;
+}
+
+.sidebar-item--collapsed {
+  padding: 0.75rem;
+  justify-content: center;
+}
+
+.sidebar-item:hover {
+  background-color: rgba(0, 0, 0, 0.04);
+  color: #000;
+}
+
+.sidebar-item--active {
+  background-color: rgba(0, 0, 0, 0.06);
+  color: #000;
+  font-weight: 500;
+}
+
+.sidebar-item--active::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background-color: #000;
+}
+
+.sidebar-icon {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+}
+
+.sidebar-chevron {
+  width: 16px;
+  height: 16px;
+  margin-left: auto;
+  transition: transform 0.2s;
+}
+
+.sidebar-chevron--open {
+  transform: rotate(180deg);
+}
+
+.sidebar--collapsed .sidebar-chevron {
+  display: none;
+}
+
+.sidebar-submenu {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Page Content */
+.page-content {
+  max-width: 1200px;
+  width: 100%;
+}
+
+.page-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 3rem;
+  font-weight: 500;
+  margin: 0 0 1rem;
+  color: #000;
+  letter-spacing: -0.02em;
+}
+
+.page-description {
+  font-size: 1.125rem;
+  color: #666;
+  margin: 0 0 3rem;
+  line-height: 1.6;
+}
+
+/* Wallet Grid */
+.wallet-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  gap: 2rem;
+  margin-top: 2rem;
+}
+
+.wallet-card {
+  background-color: #fff;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 1rem;
+  padding: 2.5rem;
+}
+
 /* App Header Styles */
 .app-header {
-  background-color: #FAFAF9;
+  background-color: #fff;
   border-bottom: 1px solid rgba(0, 0, 0, 0.08);
   padding: 1.5rem 3rem;
   width: 100%;
-  position: sticky;
-  top: 0;
-  z-index: 100;
+  flex-shrink: 0;
 }
 
 .app-header-inner {
@@ -349,7 +619,7 @@ hr {
 
 /* SignIn Screen */
 .signin-screen {
-  min-height: 100vh;
+  height: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -637,6 +907,36 @@ hr {
   margin: 0;
 }
 
+@media (max-width: 968px) {
+  .app-layout {
+    flex-direction: column;
+  }
+
+  .sidebar {
+    width: 100%;
+    height: auto;
+    position: relative;
+    border-right: none;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+  }
+
+  .sidebar-header {
+    padding: 1.25rem 1.5rem;
+  }
+
+  .sidebar-nav {
+    padding: 1rem 0;
+  }
+
+  .app-content {
+    padding: 2rem 1.5rem;
+  }
+
+  .page-title {
+    font-size: 2.5rem;
+  }
+}
+
 @media (max-width: 768px) {
   .app-header {
     padding: 1rem 1.5rem;
@@ -654,6 +954,23 @@ hr {
 
   .signin-title {
     font-size: 2.5rem;
+  }
+
+  .app-content {
+    padding: 1.5rem;
+  }
+
+  .page-title {
+    font-size: 2rem;
+  }
+
+  .wallet-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .wallet-card {
+    padding: 1.5rem;
   }
 
   .dashboard {
