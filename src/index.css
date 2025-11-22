@@ -88,6 +88,36 @@
     background-color: #0a0b0d;
   }
 
+  .version-tab {
+    background-color: #141519;
+    border-color: rgba(255, 255, 255, 0.08);
+    color: #8a919e;
+  }
+
+  .version-tab:hover {
+    border-color: rgba(255, 255, 255, 0.2);
+    color: #fafafa;
+  }
+
+  .version-tab.active {
+    background-color: #fafafa;
+    color: #0a0b0d;
+    border-color: #fafafa;
+  }
+
+  .how-it-works-content {
+    background: linear-gradient(135deg, #141519 0%, #1a1b1f 100%);
+    border-color: rgba(237, 137, 54, 0.3);
+  }
+
+  .step-title {
+    color: #fafafa;
+  }
+
+  .step-description {
+    color: #8a919e;
+  }
+
   .about-section,
   .landing-footer {
     background-color: #141519;
@@ -1335,6 +1365,12 @@ hr {
   flex-shrink: 0;
 }
 
+.brand-logo-image {
+  height: 40px;
+  width: auto;
+  object-fit: contain;
+}
+
 .logo-icon {
   width: 24px;
   height: 24px;
@@ -1393,7 +1429,6 @@ hr {
 /* Hero Section */
 .hero-section {
   padding: 8rem 3rem 10rem;
-  text-align: center;
   background-color: #FAFAF9;
   position: relative;
   overflow: hidden;
@@ -1417,6 +1452,29 @@ hr {
   margin: 0 auto;
   position: relative;
   z-index: 1;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4rem;
+  align-items: center;
+}
+
+.hero-left {
+  display: flex;
+  align-items: center;
+}
+
+.hero-right {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hero-image {
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+  border-radius: 8px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
 }
 
 .hero-title {
@@ -1427,6 +1485,7 @@ hr {
   margin: 0;
   color: #000;
   letter-spacing: -0.02em;
+  text-align: left;
 }
 
 /* About Section */
@@ -1479,9 +1538,52 @@ hr {
   letter-spacing: -0.02em;
 }
 
-.steps-grid {
+.how-it-works-container {
   max-width: 1200px;
   margin: 0 auto;
+}
+
+.version-tabs {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 4rem;
+}
+
+.version-tab {
+  padding: 0.875rem 2rem;
+  font-size: 1rem;
+  font-weight: 500;
+  background-color: #fff;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 2rem;
+  color: #666;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-family: var(--cdp-example-font-family);
+}
+
+.version-tab:hover {
+  border-color: rgba(0, 0, 0, 0.2);
+  color: #000;
+}
+
+.version-tab.active {
+  background-color: #000;
+  color: #fff;
+  border-color: #000;
+}
+
+.how-it-works-content {
+  padding: 3rem;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #fff 0%, #f8f6f0 100%);
+  border: 2px solid rgba(237, 137, 54, 0.2);
+  box-shadow: 0 4px 20px rgba(237, 137, 54, 0.1);
+  transition: all 0.3s ease;
+}
+
+.steps-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 3rem;
@@ -1546,8 +1648,18 @@ hr {
 
 /* Responsive Design for Landing */
 @media (max-width: 1024px) {
+  .hero-content {
+    grid-template-columns: 1fr;
+    gap: 3rem;
+  }
+
   .hero-title {
     font-size: 5rem;
+    text-align: center;
+  }
+
+  .hero-right {
+    order: -1;
   }
 
   .section-title-large {
@@ -1585,8 +1697,13 @@ hr {
     padding: 4rem 1.5rem 6rem;
   }
 
+  .hero-content {
+    gap: 2rem;
+  }
+
   .hero-title {
     font-size: 3rem;
+    text-align: center;
   }
 
   .section-title-large {
@@ -1601,6 +1718,20 @@ hr {
   .about-section,
   .how-it-works-section {
     padding: 4rem 1.5rem;
+  }
+
+  .version-tabs {
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+
+  .version-tab {
+    padding: 0.75rem 1.5rem;
+    font-size: 0.95rem;
+  }
+
+  .how-it-works-content {
+    padding: 2rem 1.5rem;
   }
 
   .steps-grid {

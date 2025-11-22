@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useUser } from '../hooks/useUser';
 import { getFarmsByFarmer } from '../services/farmService';
-import { getBatchesByFarm, isBatchReadyForHypercert } from '../services/farmProcessService';
+import { getBatchesByFarm, isBatchReadyForHypercert, getBatchPhotos } from '../services/farmProcessService';
 import { mintBatchHypercert } from '../services/hypercertService';
 import type { Farm, ProcessBatch } from '../lib/supabase';
 
@@ -156,7 +156,6 @@ function HypercertsPageContent() {
       
       if (result.success && result.claimId) {
         // Get work timeframe from batch photos
-        const { getBatchPhotos } = await import('../services/farmProcessService');
         const photos = await getBatchPhotos(batch.farm.id, batch.batch_id);
         const photoDates = photos
           .map(p => new Date(p.taken_at).getTime())

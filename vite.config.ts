@@ -20,4 +20,42 @@ export default defineConfig({
       process: 'process/browser',
     },
   },
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: (id) => {
+          // Split large dependencies into separate chunks
+          if (id.includes('node_modules')) {
+            // Barretenberg (ZK proof library) - very large, split into separate chunk
+            if (id.includes('barretenberg') || id.includes('@aztec')) {
+              return 'barretenberg';
+            }
+            // Hypercerts SDK
+            if (id.includes('@hypercerts-org') || id.includes('hypercerts')) {
+              return 'hypercerts';
+            }
+            // Viem and related blockchain libraries
+            if (id.includes('viem') || id.includes('@wagmi') || id.includes('@tanstack')) {
+              return 'blockchain';
+            }
+            // Coinbase CDP
+            if (id.includes('@coinbase/cdp')) {
+              return 'coinbase-cdp';
+            }
+            // Mapbox
+            if (id.includes('mapbox') || id.includes('@mapbox')) {
+              return 'mapbox';
+            }
+            // React and React DOM
+            if (id.includes('react') || id.includes('react-dom')) {
+              return 'react-vendor';
+            }
+            // Other node_modules
+            return 'vendor';
+          }
+        },
+      },
+    },
+    chunkSizeWarningLimit: 1000, // Increase warning limit to 1MB (chunks like barretenberg are inherently large)
+  },
 });

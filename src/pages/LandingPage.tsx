@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
 
 /**
@@ -5,16 +6,18 @@ import { Link } from "react-router-dom";
  * Introduces the coffee traceability platform and provides navigation to the app
  */
 function LandingPage() {
+  const [activeVersion, setActiveVersion] = useState<"producers" | "roasters">("producers");
   return (
     <div className="landing-page">
       {/* Navigation Header */}
       <nav className="landing-nav">
         <div className="landing-nav-inner">
           <div className="landing-logo">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" className="logo-icon">
-              <path d="M12 2L2 7v10c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-10-5z"/>
-            </svg>
-            <span className="landing-brand">Coffee Traceability</span>
+            <img 
+              src="/photo_2025-11-22_17-29-28.jpg" 
+              alt="Cortado" 
+              className="brand-logo-image"
+            />
           </div>
           <div className="landing-nav-links">
             <a href="#about" className="landing-nav-link">About</a>
@@ -34,7 +37,16 @@ function LandingPage() {
       <section className="hero-section">
         <div className="wave-pattern"></div>
         <div className="hero-content">
-          <h1 className="hero-title">Verify and Reward Coffee Excellence</h1>
+          <div className="hero-left">
+            <h1 className="hero-title">Verify and Reward Coffee Excellence</h1>
+          </div>
+          <div className="hero-right">
+            <img 
+              src="/photo_2025-11-22_17-29-20.jpg" 
+              alt="Coffee Excellence" 
+              className="hero-image"
+            />
+          </div>
         </div>
       </section>
 
@@ -63,34 +75,88 @@ function LandingPage() {
       {/* How It Works Section */}
       <section className="how-it-works-section" id="how-it-works">
         <h2 className="section-title-large">How It Works</h2>
-        <div className="steps-grid">
-          <div className="step-item">
-            <div className="step-number">01</div>
-            <h3 className="step-title">Map Your Farm</h3>
-            <p className="step-description">
-              Geolocate each coffee tree and define your production areas with precision mapping.
-            </p>
+        <div className="how-it-works-container">
+          {/* Tab Buttons */}
+          <div className="version-tabs">
+            <button
+              className={`version-tab ${activeVersion === "producers" ? "active" : ""}`}
+              onClick={() => setActiveVersion("producers")}
+            >
+              For Producers
+            </button>
+            <button
+              className={`version-tab ${activeVersion === "roasters" ? "active" : ""}`}
+              onClick={() => setActiveVersion("roasters")}
+            >
+              For Supporters
+            </button>
           </div>
-          <div className="step-item">
-            <div className="step-number">02</div>
-            <h3 className="step-title">Document Monthly</h3>
-            <p className="step-description">
-              Upload photos and evidence throughout the growing season with timestamp verification.
-            </p>
-          </div>
-          <div className="step-item">
-            <div className="step-number">03</div>
-            <h3 className="step-title">Record Metadata</h3>
-            <p className="step-description">
-              Log processing methods, quality scores, and farming practices for each batch.
-            </p>
-          </div>
-          <div className="step-item">
-            <div className="step-number">04</div>
-            <h3 className="step-title">Issue Hypercerts</h3>
-            <p className="step-description">
-              Mint blockchain-backed certificates linking to your verifiable production data.
-            </p>
+
+          {/* Steps Content */}
+          <div className="how-it-works-content">
+            {activeVersion === "producers" ? (
+              <div className="steps-grid">
+                <div className="step-item">
+                  <div className="step-number">01</div>
+                  <h3 className="step-title">Map Your Farm</h3>
+                  <p className="step-description">
+                    Geolocate each coffee tree and define your production areas with precision mapping.
+                  </p>
+                </div>
+                <div className="step-item">
+                  <div className="step-number">02</div>
+                  <h3 className="step-title">Document Monthly</h3>
+                  <p className="step-description">
+                    Upload photos and evidence throughout the growing season with timestamp verification.
+                  </p>
+                </div>
+                <div className="step-item">
+                  <div className="step-number">03</div>
+                  <h3 className="step-title">Record Metadata</h3>
+                  <p className="step-description">
+                    Log processing methods, quality scores, and farming practices for each batch.
+                  </p>
+                </div>
+                <div className="step-item">
+                  <div className="step-number">04</div>
+                  <h3 className="step-title">Get Funded for Your Data</h3>
+                  <p className="step-description">
+                    Receive funding from roasters and buyers who value your transparent and verifiable production data.
+                  </p>
+                </div>
+              </div>
+            ) : (
+              <div className="steps-grid">
+                <div className="step-item">
+                  <div className="step-number">01</div>
+                  <h3 className="step-title">Fund Traceability</h3>
+                  <p className="step-description">
+                    Invest in coffee producers by funding their traceability data collection and verification processes.
+                  </p>
+                </div>
+                <div className="step-item">
+                  <div className="step-number">02</div>
+                  <h3 className="step-title">Access Complete Data</h3>
+                  <p className="step-description">
+                    View farm maps, processing methods, quality scores, and monthly photo documentation from funded producers.
+                  </p>
+                </div>
+                <div className="step-item">
+                  <div className="step-number">03</div>
+                  <h3 className="step-title">Verify Quality</h3>
+                  <p className="step-description">
+                    Review verifiable proof of sustainable practices and production metadata for informed purchasing decisions.
+                  </p>
+                </div>
+                <div className="step-item">
+                  <div className="step-number">04</div>
+                  <h3 className="step-title">Purchase with Confidence</h3>
+                  <p className="step-description">
+                    Make transparent purchasing decisions backed by blockchain-verified certificates and complete traceability.
+                  </p>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </section>

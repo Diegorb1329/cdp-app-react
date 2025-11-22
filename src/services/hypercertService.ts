@@ -2,7 +2,7 @@ import { HypercertClient, formatHypercertData, TransferRestrictions } from "@hyp
 import { createWalletClient, custom, http } from "viem";
 import { sepolia, base } from "viem/chains";
 import type { ProcessBatch, Farm } from '../lib/supabase';
-import { getBatchPhotos } from './farmProcessService';
+import { getBatchPhotos, isBatchReadyForHypercert } from './farmProcessService';
 import { supabase } from '../lib/supabase';
 import { createCDPEmbeddedWallet, toViemAccount, getCurrentUser } from '@coinbase/cdp-core';
 
@@ -327,9 +327,6 @@ export async function mintBatchHypercert(
   totalUnits: bigint = 10000n
 ): Promise<{ success: boolean; claimId?: string; error?: string }> {
   try {
-    // Import here to avoid circular dependency
-    const { isBatchReadyForHypercert } = await import('./farmProcessService');
-    
     // Check if batch is ready
     const readiness = await isBatchReadyForHypercert(farm.id, batch.batch_id);
     
