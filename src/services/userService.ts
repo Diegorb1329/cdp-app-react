@@ -105,3 +105,89 @@ export async function updateUserRole(
   }
 }
 
+/**
+ * Update ZK verification status and unique identifier
+ */
+export async function updateZKVerification(
+  walletAddress: string,
+  verified: boolean,
+  uniqueIdentifier: string | null,
+  proofHash?: string | null
+): Promise<User | null> {
+  try {
+    const normalizedAddress = walletAddress.toLowerCase();
+    console.log('updateZKVerification called with:', {
+      walletAddress: normalizedAddress,
+      verified,
+      uniqueIdentifier,
+      proofHash,
+    });
+
+    // First, check if user exists
+    const { data: existingUser, error: fetchError } = await supabase
+      .from('users')
+      .select('*')
+      .eq('wallet_address', normalizedAddress)
+      .single();
+
+    if (fetchError) {
+      console.error('Error fetching user before update:', fetchError);
+      // User might not exist, try to create or just return null
+      return null;
+    }
+
+    if (!existingUser) {
+      console.error('User not found in database');
+      return null;
+    }
+
+    console.log('User found, current data:', existingUser);
+
+    const updateData: {
+      zk_verified: boolean;
+      unique_identifier: string | null;
+      zk_proof_hash?: string | null;
+    } = {
+      zk_verified: verified,
+      unique_identifier: uniqueIdentifier,
+    };
+
+    if (proofHash !== undefined) {
+      updateData.zk_proof_hash = proofHash;
+    }
+
+    console.log('Updating database with:', updateData);
+
+    const { data, error } = await supabase
+      .from('users')
+      .update(updateData)
+      .eq('wallet_address', normalizedAddress)
+      .select()
+      .single();
+
+    if (error) {
+      console.error('Supabase error updating ZK verification:', error);
+      console.error('Error code:', error.code);
+      console.error('Error message:', error.message);
+      console.error('Error details:', error.details);
+      console.error('Error hint:', error.hint);
+      return null;
+    }
+
+    if (!data) {
+      console.error('Update returned no data');
+      return null;
+    }
+
+    console.log('Database update successful:', data);
+    return data;
+  } catch (error) {
+    console.error('Exception updating ZK verification:', error);
+    if (error instanceof Error) {
+      console.error('Error message:', error.message);
+      console.error('Error stack:', error.stack);
+    }
+    return null;
+  }
+}
+

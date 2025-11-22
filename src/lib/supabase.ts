@@ -15,6 +15,7 @@ export interface User {
   wallet_address: string;
   zk_verified: boolean;
   zk_proof_hash: string | null;
+  unique_identifier: string | null;
   created_at: string;
   role: 'farmer' | 'tester' | null;
 }

@@ -7,6 +7,7 @@ import Sidebar from "../components/Sidebar";
 import Header from "../components/Header";
 import UserBalance from "../components/UserBalance";
 import EOATransaction from "../components/EOATransaction";
+import HumanityProofPage from "./HumanityProofPage";
 
 /**
  * Create a viem client to access user's balance on the Base Sepolia network
@@ -82,6 +83,7 @@ function SignedInScreen() {
           <Routes>
             <Route path="/" element={<Navigate to="/app/wallet" replace />} />
             <Route path="/wallet" element={<WalletPage />} />
+            <Route path="/humanity-proof" element={<HumanityProofPage />} />
             <Route path="/farms" element={<FarmsPage />} />
           </Routes>
         </main>
