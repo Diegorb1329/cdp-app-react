@@ -11,12 +11,90 @@ interface BatchWithFarm extends ProcessBatch {
   readyForHypercert?: { ready: boolean; reason?: string };
 }
 
+interface MintedHypercert {
+  claimId: string;
+  txHash?: string;
+  mintedAt: string;
+  workTimeframe?: { start: string; end: string };
+  workScope?: string[];
+  impactScope?: string[];
+}
+
+// Demo hypercerts data - these appear as if already minted
+const DEMO_HYPERCERTS: Array<{
+  batch_id: string;
+  farm_id: string;
+  farm_name: string;
+  hypercert: MintedHypercert;
+  created_at: string;
+}> = [
+  {
+    batch_id: 'demo-batch-001',
+    farm_id: 'demo-farm-001',
+    farm_name: 'Finca La Esperanza',
+    created_at: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString(),
+    hypercert: {
+      claimId: '0x1234567890abcdef1234567890abcdef12345678',
+      txHash: '0xabcdef1234567890abcdef1234567890abcdef12',
+      mintedAt: new Date(Date.now() - 25 * 24 * 60 * 60 * 1000).toISOString(),
+      workTimeframe: {
+        start: '2024-01-15',
+        end: '2024-03-20'
+      },
+      workScope: ['Specialty coffee', 'Data', 'Trazability'],
+      impactScope: ['All']
+    }
+  },
+  {
+    batch_id: 'demo-batch-002',
+    farm_id: 'demo-farm-002',
+    farm_name: 'Cafetal del Valle',
+    created_at: new Date(Date.now() - 60 * 24 * 60 * 60 * 1000).toISOString(),
+    hypercert: {
+      claimId: '0x9876543210fedcba9876543210fedcba98765432',
+      txHash: '0xfedcba0987654321fedcba0987654321fedcba09',
+      mintedAt: new Date(Date.now() - 55 * 24 * 60 * 60 * 1000).toISOString(),
+      workTimeframe: {
+        start: '2023-11-01',
+        end: '2024-01-10'
+      },
+      workScope: ['Specialty coffee', 'Data', 'Trazability'],
+      impactScope: ['All']
+    }
+  },
+  {
+    batch_id: 'demo-batch-003',
+    farm_id: 'demo-farm-003',
+    farm_name: 'Montaña Verde',
+    created_at: new Date(Date.now() - 90 * 24 * 60 * 60 * 1000).toISOString(),
+    hypercert: {
+      claimId: '0x5555555555555555555555555555555555555555',
+      txHash: '0x6666666666666666666666666666666666666666',
+      mintedAt: new Date(Date.now() - 85 * 24 * 60 * 60 * 1000).toISOString(),
+      workTimeframe: {
+        start: '2023-09-15',
+        end: '2023-11-30'
+      },
+      workScope: ['Specialty coffee', 'Data', 'Trazability'],
+      impactScope: ['All']
+    }
+  }
+];
+
 function HypercertsPageContent() {
   const { user } = useUser();
   const [loading, setLoading] = useState(true);
   const [batches, setBatches] = useState<BatchWithFarm[]>([]);
   const [mintingBatchId, setMintingBatchId] = useState<string | null>(null);
-  const [mintedHypercerts, setMintedHypercerts] = useState<Map<string, { claimId: string; txHash?: string }>>(new Map());
+  
+  // Initialize minted hypercerts with demo data
+  const [mintedHypercerts, setMintedHypercerts] = useState<Map<string, MintedHypercert>>(() => {
+    const demoMap = new Map<string, MintedHypercert>();
+    DEMO_HYPERCERTS.forEach(demo => {
+      demoMap.set(demo.batch_id, demo.hypercert);
+    });
+    return demoMap;
+  });
 
   useEffect(() => {
     async function loadBatches() {
@@ -68,7 +146,7 @@ function HypercertsPageContent() {
 
   const handleMintHypercert = async (batch: BatchWithFarm) => {
     if (!batch.readyForHypercert?.ready) {
-      alert(`Batch is not ready: ${batch.readyForHypercert.reason}`);
+      alert(`Batch is not ready: ${batch.readyForHypercert?.reason || 'Unknown reason'}`);
       return;
     }
 
@@ -77,10 +155,27 @@ function HypercertsPageContent() {
       const result = await mintBatchHypercert(batch, batch.farm);
       
       if (result.success && result.claimId) {
+        // Get work timeframe from batch photos
+        const { getBatchPhotos } = await import('../services/farmProcessService');
+        const photos = await getBatchPhotos(batch.farm.id, batch.batch_id);
+        const photoDates = photos
+          .map(p => new Date(p.taken_at).getTime())
+          .filter(d => !isNaN(d))
+          .sort((a, b) => a - b);
+        
+        const workTimeframe = photoDates.length > 0 ? {
+          start: new Date(photoDates[0]).toISOString().split('T')[0],
+          end: new Date(photoDates[photoDates.length - 1]).toISOString().split('T')[0]
+        } : undefined;
+
         // Store the minted hypercert
         setMintedHypercerts(prev => new Map(prev.set(batch.batch_id, {
           claimId: result.claimId!,
           txHash: result.claimId, // The claimId is actually the tx hash
+          mintedAt: new Date().toISOString(),
+          workTimeframe,
+          workScope: ['Specialty coffee', 'Data', 'Trazability'],
+          impactScope: ['All']
         })));
         alert(`Hypercert minted successfully! Transaction: ${result.claimId}`);
       } else {
@@ -94,9 +189,38 @@ function HypercertsPageContent() {
     }
   };
 
-  const readyBatches = batches.filter(b => b.readyForHypercert?.ready && !mintedHypercerts.has(b.batch_id));
-  const mintedBatches = batches.filter(b => mintedHypercerts.has(b.batch_id));
-  const notReadyBatches = batches.filter(b => !b.readyForHypercert?.ready && !mintedHypercerts.has(b.batch_id));
+  // Combine real batches with demo hypercerts
+  const demoBatches: BatchWithFarm[] = DEMO_HYPERCERTS.map(demo => ({
+    batch_id: demo.batch_id,
+    farm_id: demo.farm_id,
+    created_at: demo.created_at,
+    steps: [], // Demo batches don't have steps
+    farm: {
+      id: demo.farm_id,
+      farmer_id: user?.id || '',
+      name: demo.farm_name,
+      boundaries: [],
+      area_hectares: null,
+      metadata: {},
+      created_at: demo.created_at,
+      updated_at: demo.created_at,
+    },
+    readyForHypercert: { ready: true }
+  }));
+
+  const allBatchesWithDemos = [...batches, ...demoBatches];
+  
+  const readyBatches = allBatchesWithDemos.filter(b => 
+    b.readyForHypercert?.ready && 
+    !mintedHypercerts.has(b.batch_id) &&
+    !DEMO_HYPERCERTS.some(d => d.batch_id === b.batch_id)
+  );
+  const mintedBatches = allBatchesWithDemos.filter(b => mintedHypercerts.has(b.batch_id));
+  const notReadyBatches = allBatchesWithDemos.filter(b => 
+    !b.readyForHypercert?.ready && 
+    !mintedHypercerts.has(b.batch_id) &&
+    !DEMO_HYPERCERTS.some(d => d.batch_id === b.batch_id)
+  );
 
   if (loading) {
     return (
@@ -169,36 +293,97 @@ function HypercertsPageContent() {
           <div className="hypercerts-grid">
             {mintedBatches.map((batch) => {
               const hypercert = mintedHypercerts.get(batch.batch_id);
+              const isDemo = DEMO_HYPERCERTS.some(d => d.batch_id === batch.batch_id);
+              
               return (
                 <div key={batch.batch_id} className="hypercert-card hypercert-card--minted">
-                  <div className="hypercert-card-header">
-                    <h3 className="hypercert-card-title">
-                      {batch.farm.name} - Batch {batch.batch_id.slice(0, 8)}
-                    </h3>
-                    <span className="hypercert-badge hypercert-badge--minted">Minted</span>
+                  {/* Visual Header Section */}
+                  <div className="hypercert-visual-header">
+                    <div className="hypercert-visual-bg">
+                      <div className="hypercert-visual-icon">
+                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                          <path d="M12 2L2 7v10c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-10-5z" />
+                        </svg>
+                      </div>
+                      <div className="hypercert-visual-globe"></div>
+                    </div>
+                    <div className="hypercert-visual-title">
+                      <h3 className="hypercert-visual-name">
+                        {batch.farm.name}
+                      </h3>
+                      <p className="hypercert-visual-subtitle">
+                        Batch {batch.batch_id.slice(0, 8)}
+                      </p>
+                    </div>
                   </div>
-                  <div className="hypercert-card-body">
-                    <p className="hypercert-farm-link">
-                      <Link to={`/app/farms/${batch.farm.id}`}>
-                        View Farm: {batch.farm.name}
-                      </Link>
-                    </p>
-                    <p className="hypercert-meta">
-                      <strong>Claim ID:</strong> {hypercert?.claimId.slice(0, 10)}...
-                    </p>
-                    <p className="hypercert-meta">
-                      <strong>Created:</strong> {new Date(batch.created_at).toLocaleDateString()}
-                    </p>
-                  </div>
-                  <div className="hypercert-card-footer">
-                    <a
-                      href={`https://sepolia.etherscan.io/tx/${hypercert?.claimId}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="button button--secondary"
-                    >
-                      View on Etherscan
-                    </a>
+
+                  {/* Content Section */}
+                  <div className="hypercert-content-section">
+                    <div className="hypercert-content-header">
+                      <h4 className="hypercert-content-title">
+                        Specialty Coffee Production
+                      </h4>
+                      <span className="hypercert-badge hypercert-badge--minted">Minted</span>
+                    </div>
+
+                    {/* Work Timeline */}
+                    {hypercert?.workTimeframe && (
+                      <div className="hypercert-timeline">
+                        <div className="hypercert-timeline-label">WORK</div>
+                        <div className="hypercert-timeline-dates">
+                          {new Date(hypercert.workTimeframe.start).toLocaleDateString('en-GB', { 
+                            day: '2-digit', 
+                            month: 'short', 
+                            year: 'numeric' 
+                          })} → {new Date(hypercert.workTimeframe.end).toLocaleDateString('en-GB', { 
+                            day: '2-digit', 
+                            month: 'short', 
+                            year: 'numeric' 
+                          })}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Tags */}
+                    <div className="hypercert-tags">
+                      {hypercert?.workScope?.map((scope, idx) => (
+                        <span key={idx} className="hypercert-tag">{scope}</span>
+                      ))}
+                      {hypercert?.impactScope?.map((scope, idx) => (
+                        <span key={idx} className="hypercert-tag hypercert-tag--impact">{scope}</span>
+                      ))}
+                    </div>
+
+                    {/* Metadata */}
+                    <div className="hypercert-metadata">
+                      <div className="hypercert-meta-item">
+                        <span className="hypercert-meta-label">Minted:</span>
+                        <span className="hypercert-meta-value">
+                          {hypercert?.mintedAt 
+                            ? new Date(hypercert.mintedAt).toLocaleDateString()
+                            : 'Recently'}
+                        </span>
+                      </div>
+                      {!isDemo && (
+                        <p className="hypercert-farm-link">
+                          <Link to={`/app/farms/${batch.farm.id}`}>
+                            View Farm: {batch.farm.name}
+                          </Link>
+                        </p>
+                      )}
+                    </div>
+
+                    {/* Actions */}
+                    <div className="hypercert-card-footer">
+                      <a
+                        href={`https://sepolia.etherscan.io/tx/${hypercert?.claimId || hypercert?.txHash}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="button button--secondary"
+                      >
+                        View on Etherscan
+                      </a>
+                    </div>
                   </div>
                 </div>
               );

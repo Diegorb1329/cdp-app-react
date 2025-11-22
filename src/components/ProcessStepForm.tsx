@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
-import { createProcessStep, type CreateProcessStepData } from '../services/farmProcessService';
+import { createProcessStep } from '../services/farmProcessService';
 import { FarmMap } from './FarmMap';
 import { getFarmById } from '../services/farmService';
 import { getTreesByFarm } from '../services/treeService';

@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import mapboxgl from 'mapbox-gl';
 import MapboxDraw from '@mapbox/mapbox-gl-draw';
 import type { Farm, Tree } from '../lib/supabase';
-import type { Feature, Polygon, MultiPolygon } from 'geojson';
+import type { Feature, Polygon } from 'geojson';
 
 mapboxgl.accessToken = import.meta.env.VITE_MAPBOX_API_KEY || import.meta.env.MAPBOX_API_KEY || '';
 
@@ -309,23 +309,28 @@ export function FarmMap({
       console.log('Tree location data:', tree.id, tree.location, typeof tree.location);
 
       // Check if location is still a string (not parsed)
-      let location: { lat: number; lng: number };
-      if (typeof tree.location === 'string') {
+      let location: { lat: number; lng: number } | null = null;
+      const locationValue = tree.location as string | { lat: number; lng: number };
+      if (typeof locationValue === 'string') {
         // Try to parse it
-        const match = tree.location.match(/\(([^,]+),([^)]+)\)/);
+        const match = locationValue.match(/\(([^,]+),([^)]+)\)/);
         if (match) {
           location = {
             lng: parseFloat(match[1].trim()),
             lat: parseFloat(match[2].trim())
           };
         } else {
-          console.warn('Could not parse location string:', tree.location);
+          console.warn('Could not parse location string:', locationValue);
           return;
         }
-      } else if (typeof tree.location === 'object' && 'lat' in tree.location && 'lng' in tree.location) {
-        location = tree.location as { lat: number; lng: number };
+      } else if (typeof locationValue === 'object' && locationValue !== null && 'lat' in locationValue && 'lng' in locationValue) {
+        location = locationValue as { lat: number; lng: number };
       } else {
-        console.warn('Invalid location format:', tree.location);
+        console.warn('Invalid location format:', locationValue);
+        return;
+      }
+      
+      if (!location) {
         return;
       }
 
@@ -377,9 +382,10 @@ export function FarmMap({
           if (!tree.location) return;
           
           // Parse location if it's a string
-          let location: { lat: number; lng: number };
-          if (typeof tree.location === 'string') {
-            const match = tree.location.match(/\(([^,]+),([^)]+)\)/);
+          let location: { lat: number; lng: number } | null = null;
+          const locationValue = tree.location as string | { lat: number; lng: number };
+          if (typeof locationValue === 'string') {
+            const match = locationValue.match(/\(([^,]+),([^)]+)\)/);
             if (match) {
               location = {
                 lng: parseFloat(match[1].trim()),
@@ -388,9 +394,13 @@ export function FarmMap({
             } else {
               return;
             }
-          } else if (typeof tree.location === 'object' && 'lat' in tree.location && 'lng' in tree.location) {
-            location = tree.location as { lat: number; lng: number };
+          } else if (typeof locationValue === 'object' && locationValue !== null && 'lat' in locationValue && 'lng' in locationValue) {
+            location = locationValue as { lat: number; lng: number };
           } else {
+            return;
+          }
+          
+          if (!location) {
             return;
           }
 

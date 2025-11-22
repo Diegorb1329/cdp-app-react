@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useEvmAddress } from '@coinbase/cdp-hooks';
 import { useUser } from '../hooks/useUser';
 import { getFarmsByFarmer } from '../services/farmService';
 import { ProtectedRoute } from '../components/ProtectedRoute';
@@ -9,7 +8,6 @@ import { FarmMap } from '../components/FarmMap';
 import type { Farm } from '../lib/supabase';
 
 function FarmsPageContent() {
-  const { evmAddress } = useEvmAddress();
   const { user } = useUser();
   const navigate = useNavigate();
   const [farms, setFarms] = useState<Farm[]>([]);

@@ -1,4 +1,4 @@
-import { supabase, type FarmProcessStep, type ProcessBatch, type TreeMonthlyStatus, type Tree, type TreePhoto } from '../lib/supabase';
+import { supabase, type FarmProcessStep, type ProcessBatch, type TreeMonthlyStatus, type TreePhoto } from '../lib/supabase';
 import { uploadTreePhoto } from './photoService';
 import { getTreesByFarm } from './treeService';
 
@@ -92,7 +92,7 @@ export async function getTreeMonthlyStatus(
     });
 
     // Calculate missing months (1-12)
-    treeStatusMap.forEach((status, treeId) => {
+    treeStatusMap.forEach((status) => {
       const allMonths = Array.from({ length: 12 }, (_, i) => i + 1);
       status.missing_months = allMonths.filter(month => 
         !status.completed_months.includes(month)
@@ -161,7 +161,7 @@ export async function getBatchesByFarm(farmId: string): Promise<ProcessBatch[]> 
 /**
  * Create a new batch for a farm
  */
-export async function createNewBatch(farmId: string): Promise<string | null> {
+export async function createNewBatch(_farmId: string): Promise<string | null> {
   try {
     // Generate a new batch_id
     const batchId = crypto.randomUUID();

@@ -122,10 +122,6 @@ export async function uploadJSONToIPFS(data: any): Promise<IPFSUploadResult> {
       throw new Error('Pinata SDK upload is not available. Check SDK initialization.');
     }
     
-    // Convert JSON to File
-    const jsonString = JSON.stringify(data);
-    const jsonFile = new File([jsonString], 'data.json', { type: 'application/json' });
-    
     // Use the correct API: upload.json() is better for JSON data
     let uploadBuilder = pinataClient.upload
       .json(data)
@@ -149,7 +145,7 @@ export async function uploadJSONToIPFS(data: any): Promise<IPFSUploadResult> {
     return {
       cid,
       gatewayUrl,
-      size: upload.size || jsonString.length
+      size: upload.size || JSON.stringify(data).length
     };
   } catch (error) {
     console.error('Error uploading JSON to IPFS:', error);
@@ -165,7 +161,7 @@ export async function extractPhotoMetadata(photoFile: File): Promise<PhotoMetada
     const exifData = await exifr.parse(photoFile, {
       gps: true,
       exif: true,
-      ifd0: true,
+      ifd0: true as any,
       ifd1: true,
       translateKeys: false,
       translateValues: false,

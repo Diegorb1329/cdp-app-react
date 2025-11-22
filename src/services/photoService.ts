@@ -1,9 +1,8 @@
 import { supabase, type TreePhoto } from '../lib/supabase';
-import { uploadPhotoWithMetadata, type PhotoMetadata } from './ipfsService';
+import { uploadPhotoWithMetadata } from './ipfsService';
 import { getTreeById } from './treeService';
 import { getFarmById } from './farmService';
 import * as turf from '@turf/turf';
-import type { Polygon } from 'geojson';
 
 export interface UploadPhotoData {
   photoFile: File;
@@ -42,7 +41,7 @@ export async function validatePhotoLocationInFarm(
       const bufferedPolygon = turf.buffer(polygon, 0.02, { units: 'kilometers' });
 
       // Check if point is inside the buffered polygon
-      if (turf.booleanPointInPolygon(photoPoint, bufferedPolygon)) {
+      if (bufferedPolygon && turf.booleanPointInPolygon(photoPoint, bufferedPolygon)) {
         return { valid: true };
       }
     }
@@ -87,6 +86,10 @@ export async function uploadTreePhoto(
     }
 
     // Upload to IPFS with metadata
+    if (!photoData.location) {
+      throw new Error('Location is required to upload photo');
+    }
+    
     const uploadResult = await uploadPhotoWithMetadata(
       photoData.photoFile,
       photoData.location

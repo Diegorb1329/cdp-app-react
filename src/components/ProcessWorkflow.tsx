@@ -28,6 +28,7 @@ export function ProcessWorkflow({ farm }: ProcessWorkflowProps) {
     monthlySteps: any[];
     dryingSteps: any[];
     finalBagSteps: any[];
+    treeMonthlyStatus: any[];
   } | null>(null);
   const [batches, setBatches] = useState<any[]>([]);
   const [selectedBatchId, setSelectedBatchId] = useState<string | null>(null);
@@ -74,24 +75,52 @@ export function ProcessWorkflow({ farm }: ProcessWorkflowProps) {
         if (batchIdToUse) {
           try {
             const status = await getFarmProcessStatus(farm.id, batchIdToUse);
-            setProcessStatus(status);
+            setProcessStatus({
+              ...status,
+              currentMonth: null,
+              availableActions: {
+                ...status.availableActions,
+                nextMonthlyNumber: 1
+              }
+            });
           } catch (error) {
             console.error('Error loading process status:', error);
             // Try loading without batch filter as fallback
             const status = await getFarmProcessStatus(farm.id);
-            setProcessStatus(status);
+            setProcessStatus({
+              ...status,
+              currentMonth: null,
+              availableActions: {
+                ...status.availableActions,
+                nextMonthlyNumber: 1
+              }
+            });
           }
         } else {
           // No batch available, create empty status
           const status = await getFarmProcessStatus(farm.id);
-          setProcessStatus(status);
+          setProcessStatus({
+            ...status,
+            currentMonth: null,
+            availableActions: {
+              ...status.availableActions,
+              nextMonthlyNumber: 1
+            }
+          });
         }
       } catch (error) {
         console.error('Error loading batches:', error);
         // Try to load process status anyway (without batch filter)
         try {
           const status = await getFarmProcessStatus(farm.id);
-          setProcessStatus(status);
+          setProcessStatus({
+            ...status,
+            currentMonth: null,
+            availableActions: {
+              ...status.availableActions,
+              nextMonthlyNumber: 1
+            }
+          });
         } catch (statusError) {
           console.error('Error loading process status as fallback:', statusError);
           setProcessStatus(null);
@@ -110,25 +139,6 @@ export function ProcessWorkflow({ farm }: ProcessWorkflowProps) {
       loadProcessStatus();
     }
   }, [selectedBatchId]);
-
-  const loadBatches = async () => {
-    const allBatches = await getBatchesByFarm(farm.id);
-    setBatches(allBatches);
-    
-    // Validate that selectedBatchId belongs to this farm
-    const validBatchId = allBatches.find(b => b.batch_id === selectedBatchId)?.batch_id;
-    
-    // Auto-select first batch if none selected or if current selection is invalid
-    if (allBatches.length > 0) {
-      if (!validBatchId) {
-        // Reset to first batch if current selection doesn't belong to this farm
-        setSelectedBatchId(allBatches[0].batch_id);
-      }
-    } else if (allBatches.length === 0) {
-      // Create first batch if none exist
-      await handleCreateNewBatch();
-    }
-  };
 
   const loadProcessStatus = async () => {
     // Allow loading if we have a selectedBatchId (even if batches list is empty - new batch with no steps)
@@ -155,19 +165,40 @@ export function ProcessWorkflow({ farm }: ProcessWorkflowProps) {
         // If batch doesn't belong to this farm, use first batch
         const firstBatchId = batches[0].batch_id;
         const status = await getFarmProcessStatus(farm.id, firstBatchId);
-        setProcessStatus(status);
+        setProcessStatus({
+          ...status,
+          currentMonth: null,
+          availableActions: {
+            ...status.availableActions,
+            nextMonthlyNumber: 1
+          }
+        });
         setSelectedBatchId(firstBatchId);
       } else {
         // Load status - this works even for new batches without steps yet
         // Even if batchId is not in batches list (new batch with no steps)
         try {
           const status = await getFarmProcessStatus(farm.id, batchId);
-          setProcessStatus(status);
+          setProcessStatus({
+            ...status,
+            currentMonth: null,
+            availableActions: {
+              ...status.availableActions,
+              nextMonthlyNumber: 1
+            }
+          });
         } catch (error) {
           console.error('Error loading process status for batch:', batchId, error);
           // If error, try loading without batch filter (all steps for farm)
           const status = await getFarmProcessStatus(farm.id);
-          setProcessStatus(status);
+          setProcessStatus({
+            ...status,
+            currentMonth: null,
+            availableActions: {
+              ...status.availableActions,
+              nextMonthlyNumber: 1
+            }
+          });
         }
       }
     } catch (error) {
@@ -184,8 +215,11 @@ export function ProcessWorkflow({ farm }: ProcessWorkflowProps) {
       const newBatchId = await createNewBatch(farm.id);
       if (newBatchId) {
         // Reload batches to get the new one
-        await loadBatches();
+        const allBatches = await getBatchesByFarm(farm.id);
+        setBatches(allBatches);
         setSelectedBatchId(newBatchId);
+        // Reload process status
+        await loadProcessStatus();
       }
     } catch (error) {
       console.error('Error creating batch:', error);
@@ -236,7 +270,6 @@ export function ProcessWorkflow({ farm }: ProcessWorkflowProps) {
   }
 
   const { 
-    monthlySteps, 
     dryingSteps, 
     finalBagSteps, 
     availableActions,

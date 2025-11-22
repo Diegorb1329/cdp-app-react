@@ -161,6 +161,7 @@ export async function getTreesByFarm(farmId: string): Promise<Tree[]> {
         const locationData = tree.location;
         
         // If location is an object (Supabase might return it as an object), convert to string
+        let locationString: string;
         if (typeof locationData === 'object' && locationData !== null) {
           // If it already has lat/lng, use it directly
           if ('lat' in locationData && 'lng' in locationData) {
@@ -174,16 +175,18 @@ export async function getTreesByFarm(farmId: string): Promise<Tree[]> {
             }
           }
           // Otherwise, try to convert object to string representation
-          locationData = JSON.stringify(locationData);
+          locationString = JSON.stringify(locationData);
+        } else {
+          locationString = locationData;
         }
         
         // If it's still not a string, log and skip
-        if (typeof locationData !== 'string') {
-          console.error('Location data is not a string:', tree.id, locationData, typeof locationData);
+        if (typeof locationString !== 'string') {
+          console.error('Location data is not a string:', tree.id, locationString, typeof locationString);
           return null;
         }
         
-        const location = pointToLocation(locationData);
+        const location = pointToLocation(locationString);
         
         // Validate parsed location
         if (isNaN(location.lat) || isNaN(location.lng)) {

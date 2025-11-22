@@ -253,10 +253,6 @@ export async function formatBatchForHypercert(
       throw new Error('Invalid photo dates. Please ensure the batch has valid photos with dates.');
     }
     
-    // Format dates for display
-    const startDateStr = new Date(firstPhotoDate).toISOString().split('T')[0];
-    const endDateStr = new Date(lastPhotoDate).toISOString().split('T')[0];
-    
     // Get batch number from batch_id (first 8 chars)
     const batchNumber = batch.batch_id.slice(0, 8);
     
