@@ -4,6 +4,7 @@ import { ProtectedRoute } from '../components/ProtectedRoute';
 import { FarmMap } from '../components/FarmMap';
 import { TreeForm } from '../components/TreeForm';
 import { PhotoUpload } from '../components/PhotoUpload';
+import { ProcessWorkflow } from '../components/ProcessWorkflow';
 import { getFarmById } from '../services/farmService';
 import { getTreesByFarm } from '../services/treeService';
 import type { Farm, Tree } from '../lib/supabase';
@@ -93,6 +94,9 @@ function FarmDetailPageContent() {
           <p className="page-description">Trees: {trees.length}</p>
         </div>
       </div>
+
+      {/* Process Workflow */}
+      <ProcessWorkflow farm={farm} />
 
       {/* Map view */}
       <div style={{ marginBottom: '2rem' }}>

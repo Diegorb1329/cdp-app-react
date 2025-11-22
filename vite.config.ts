@@ -6,4 +6,18 @@ export default defineConfig({
   server: {
     port: 3000,
   },
+  define: {
+    // Polyfill for process.env that Hypercerts SDK needs
+    'process.env': JSON.stringify({
+      LOG_LEVEL: import.meta.env.VITE_LOG_LEVEL || 'info',
+      NODE_ENV: import.meta.env.MODE || 'development',
+    }),
+    // Define process as a global object
+    global: 'globalThis',
+  },
+  resolve: {
+    alias: {
+      process: 'process/browser',
+    },
+  },
 });

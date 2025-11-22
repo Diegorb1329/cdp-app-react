@@ -57,3 +57,31 @@ export interface TreePhoto {
   created_at: string;
 }
 
+export interface FarmProcessStep {
+  id: string;
+  farm_id: string;
+  batch_id: string; // For batch/cycle tracking
+  tree_id: string | null; // Required for monthly_update, null for drying/final_bag
+  step_type: 'monthly_update' | 'drying' | 'final_bag' | 'completed';
+  step_number: number | null; // For monthly updates: month number (1-12)
+  photo_id: string | null;
+  notes: string | null;
+  completed_at: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface TreeMonthlyStatus {
+  tree_id: string;
+  tree_number: string | null;
+  completed_months: number[]; // Array of month numbers (1-12) that are completed
+  missing_months: number[]; // Array of month numbers (1-12) that are missing
+}
+
+export interface ProcessBatch {
+  batch_id: string;
+  farm_id: string;
+  created_at: string;
+  steps: FarmProcessStep[];
+}
+

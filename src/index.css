@@ -1741,3 +1741,187 @@ hr {
   overflow: auto;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
+
+/* Hypercerts Page Styles */
+.hypercerts-section {
+  margin-bottom: 3rem;
+}
+
+.section-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 2rem;
+  font-weight: 500;
+  margin: 0 0 0.5rem;
+  color: #000;
+}
+
+.section-description {
+  font-size: 1rem;
+  color: #666;
+  margin: 0 0 1.5rem;
+}
+
+.hypercerts-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 1.5rem;
+}
+
+.hypercert-card {
+  background-color: #fff;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 1rem;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.hypercert-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.hypercert-card--ready {
+  border-left: 4px solid #10b981;
+}
+
+.hypercert-card--minted {
+  border-left: 4px solid #3b82f6;
+}
+
+.hypercert-card--not-ready {
+  border-left: 4px solid #f59e0b;
+}
+
+.hypercert-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1rem;
+}
+
+.hypercert-card-title {
+  font-size: 1.125rem;
+  font-weight: 600;
+  margin: 0;
+  color: #000;
+  flex: 1;
+}
+
+.hypercert-badge {
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.hypercert-badge--ready {
+  background-color: #d1fae5;
+  color: #065f46;
+}
+
+.hypercert-badge--minted {
+  background-color: #dbeafe;
+  color: #1e40af;
+}
+
+.hypercert-badge--not-ready {
+  background-color: #fef3c7;
+  color: #92400e;
+}
+
+.hypercert-card-body {
+  flex: 1;
+  margin-bottom: 1rem;
+}
+
+.hypercert-farm-link {
+  margin: 0 0 0.75rem;
+}
+
+.hypercert-farm-link a {
+  color: var(--cdp-example-accent-color);
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.2s;
+}
+
+.hypercert-farm-link a:hover {
+  color: var(--cdp-example-accent-hover-color);
+  text-decoration: underline;
+}
+
+.hypercert-meta {
+  font-size: 0.875rem;
+  color: #666;
+  margin: 0.5rem 0;
+}
+
+.hypercert-meta strong {
+  color: #000;
+  font-weight: 600;
+}
+
+.hypercert-reason {
+  font-size: 0.875rem;
+  color: #f59e0b;
+  margin: 0.75rem 0 0;
+  padding: 0.75rem;
+  background-color: #fef3c7;
+  border-radius: 0.5rem;
+}
+
+.hypercert-card-footer {
+  margin-top: auto;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.empty-state {
+  text-align: center;
+  padding: 4rem 2rem;
+  color: #666;
+}
+
+.empty-state p {
+  font-size: 1.125rem;
+  margin-bottom: 1.5rem;
+}
+
+@media (prefers-color-scheme: dark) {
+  .section-title {
+    color: #fafafa;
+  }
+
+  .section-description {
+    color: #8a919e;
+  }
+
+  .hypercert-card {
+    background-color: var(--cdp-example-card-bg-color);
+    border-color: var(--cdp-example-card-border-color);
+  }
+
+  .hypercert-card-title {
+    color: #fafafa;
+  }
+
+  .hypercert-meta {
+    color: #8a919e;
+  }
+
+  .hypercert-meta strong {
+    color: #fafafa;
+  }
+
+  .hypercert-card-footer {
+    border-top-color: var(--cdp-example-card-border-color);
+  }
+
+  .empty-state {
+    color: #8a919e;
+  }
+}

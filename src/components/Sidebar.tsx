@@ -118,6 +118,19 @@ function Sidebar() {
           </svg>
           {!isCollapsed && <span>Farms</span>}
         </Link>
+
+        {/* Hypercerts Section */}
+        <Link
+          to="/app/hypercerts"
+          className={`sidebar-item ${isActive('/app/hypercerts') ? 'sidebar-item--active' : ''}`}
+          title={isCollapsed ? "Hypercerts" : ""}
+        >
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="sidebar-icon">
+            <path d="M12 2L2 7v10c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-10-5z" />
+            <path d="M12 8v8M8 12h8" />
+          </svg>
+          {!isCollapsed && <span>Hypercerts</span>}
+        </Link>
       </nav>
     </aside>
   );

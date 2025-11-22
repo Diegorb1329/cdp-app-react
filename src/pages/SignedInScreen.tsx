@@ -10,6 +10,7 @@ import EOATransaction from "../components/EOATransaction";
 import HumanityProofPage from "./HumanityProofPage";
 import FarmsPage from "./FarmsPage";
 import FarmDetailPage from "./FarmDetailPage";
+import HypercertsPage from "./HypercertsPage";
 
 /**
  * Create a viem client to access user's balance on the Base Sepolia network
@@ -79,6 +80,7 @@ function SignedInScreen() {
             <Route path="/humanity-proof" element={<HumanityProofPage />} />
             <Route path="/farms" element={<FarmsPage />} />
             <Route path="/farms/:farmId" element={<FarmDetailPage />} />
+            <Route path="/hypercerts" element={<HypercertsPage />} />
           </Routes>
         </main>
       </div>
