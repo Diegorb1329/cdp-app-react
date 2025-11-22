@@ -8,6 +8,8 @@ import Header from "../components/Header";
 import UserBalance from "../components/UserBalance";
 import EOATransaction from "../components/EOATransaction";
 import HumanityProofPage from "./HumanityProofPage";
+import FarmsPage from "./FarmsPage";
+import FarmDetailPage from "./FarmDetailPage";
 
 /**
  * Create a viem client to access user's balance on the Base Sepolia network
@@ -61,15 +63,6 @@ function WalletPage() {
   );
 }
 
-function FarmsPage() {
-  return (
-    <div className="page-content">
-      <h1 className="page-title">Farms</h1>
-      <p className="page-description">View and manage your coffee farms</p>
-    </div>
-  );
-}
-
 /**
  * The Signed In screen with sidebar navigation
  */
@@ -85,6 +78,7 @@ function SignedInScreen() {
             <Route path="/wallet" element={<WalletPage />} />
             <Route path="/humanity-proof" element={<HumanityProofPage />} />
             <Route path="/farms" element={<FarmsPage />} />
+            <Route path="/farms/:farmId" element={<FarmDetailPage />} />
           </Routes>
         </main>
       </div>
