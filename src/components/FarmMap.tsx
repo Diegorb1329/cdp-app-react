@@ -4,6 +4,10 @@ import MapboxDraw from '@mapbox/mapbox-gl-draw';
 import type { Farm, Tree } from '../lib/supabase';
 import type { Feature, Polygon } from 'geojson';
 
+// Lazy load Mapbox CSS only when this component is used
+import 'mapbox-gl/dist/mapbox-gl.css';
+import '@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css';
+
 mapboxgl.accessToken = import.meta.env.VITE_MAPBOX_API_KEY || import.meta.env.MAPBOX_API_KEY || '';
 
 export interface FarmMapProps {

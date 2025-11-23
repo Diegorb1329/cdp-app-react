@@ -35,21 +35,29 @@ export default defineConfig({
             if (id.includes('@hypercerts-org') || id.includes('hypercerts')) {
               return 'hypercerts';
             }
-            // Viem and related blockchain libraries
-            if (id.includes('viem') || id.includes('@wagmi') || id.includes('@tanstack')) {
-              return 'blockchain';
-            }
-            // Coinbase CDP
-            if (id.includes('@coinbase/cdp')) {
-              return 'coinbase-cdp';
-            }
             // Mapbox - only load when map components are used
             if (id.includes('mapbox') || id.includes('@mapbox')) {
               return 'mapbox';
             }
-            // React and React DOM
-            if (id.includes('react') || id.includes('react-dom') || id.includes('react-router')) {
-              return 'react-vendor';
+            // Viem and related blockchain libraries
+            if (id.includes('viem') || id.includes('@wagmi') || id.includes('@tanstack')) {
+              return 'blockchain';
+            }
+            // Coinbase CDP - split into separate chunk
+            if (id.includes('@coinbase/cdp')) {
+              return 'coinbase-cdp';
+            }
+            // React Router - separate from React core
+            if (id.includes('react-router')) {
+              return 'react-router';
+            }
+            // React DOM - separate from React core
+            if (id.includes('react-dom')) {
+              return 'react-dom';
+            }
+            // React core
+            if (id.includes('react/') || id === 'react') {
+              return 'react';
             }
             // Supabase client
             if (id.includes('@supabase')) {
@@ -65,7 +73,9 @@ export default defineConfig({
         },
       },
     },
-    chunkSizeWarningLimit: 1500, // Increase warning limit to 1.5MB (chunks like barretenberg are inherently large)
+    // Increase warning limit - barretenberg is inherently large (6-7MB) and can't be reduced
+    // This is expected for ZK proof libraries
+    chunkSizeWarningLimit: 2000,
     target: 'esnext', // Use modern JS for better tree-shaking
     minify: 'esbuild', // Use esbuild for faster builds (default, but explicit)
     // Optimize chunk loading

@@ -29,6 +29,8 @@ export const CDP_CONFIG = {
     },
   }),
   appName: "Coffee Traceability Platform",
-  appLogoUrl: "http://localhost:3000/logo.svg",
+  appLogoUrl: typeof window !== 'undefined' 
+    ? `${window.location.origin}/logo.svg`
+    : "/logo.svg",
   authMethods: ["email", "sms", "oauth:google", "oauth:apple"],
 } as Config;
