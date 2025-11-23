@@ -326,3 +326,51 @@ export async function deleteTree(treeId: string): Promise<boolean> {
   }
 }
 
+/**
+ * Get all trees with farm information (for public map)
+ */
+export async function getAllTreesWithFarms(): Promise<Array<Tree & { farm_name?: string }>> {
+  try {
+    const { data, error } = await supabase
+      .from('trees')
+      .select(`
+        *,
+        farms (
+          name
+        )
+      `)
+      .eq('status', 'active') // Only get active trees
+      .order('created_at', { ascending: false });
+
+    if (error) {
+      console.error('Error fetching all trees:', error);
+      return [];
+    }
+
+    return data.map((item: any) => {
+      try {
+        const locationData = item.location;
+        const location = pointToLocation(locationData);
+        
+        // Validate parsed location
+        if (isNaN(location.lat) || isNaN(location.lng)) {
+          console.error('Invalid location parsed for tree:', item.id, locationData, location);
+          return null;
+        }
+        
+        return {
+          ...item,
+          location,
+          farm_name: item.farms?.name || 'Unknown Farm'
+        };
+      } catch (error) {
+        console.error('Error parsing location for tree:', item.id, error, 'locationData:', item.location);
+        return null;
+      }
+    }).filter((tree): tree is Tree & { farm_name?: string } => tree !== null);
+  } catch (error) {
+    console.error('Error in getAllTreesWithFarms:', error);
+    return [];
+  }
+}
+

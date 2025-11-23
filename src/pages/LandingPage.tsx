@@ -20,6 +20,7 @@ function LandingPage() {
             />
           </div>
           <div className="landing-nav-links">
+            <Link to="/map" className="landing-nav-link">Map</Link>
             <a href="#how-it-works" className="landing-nav-link">How it works</a>
             <a href="#contact" className="landing-nav-link">Contact</a>
             <Link to="/app" className="landing-cta-button">

@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+// Default import - Vite's optimizeDeps will handle mapbox-gl correctly
 import mapboxgl from 'mapbox-gl';
 import MapboxDraw from '@mapbox/mapbox-gl-draw';
 import type { Farm, Tree } from '../lib/supabase';
@@ -8,7 +9,8 @@ import type { Feature, Polygon } from 'geojson';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import '@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css';
 
-mapboxgl.accessToken = import.meta.env.VITE_MAPBOX_API_KEY || import.meta.env.MAPBOX_API_KEY || '';
+// Get access token from environment variables
+const MAPBOX_ACCESS_TOKEN = import.meta.env.VITE_MAPBOX_API_KEY || import.meta.env.MAPBOX_API_KEY || '';
 
 export interface FarmMapProps {
   farm?: Farm;
@@ -66,7 +68,7 @@ export function FarmMap({
 
   // Initialize map
   useEffect(() => {
-    if (!mapContainer.current || !mapboxgl.accessToken) {
+    if (!mapContainer.current || !MAPBOX_ACCESS_TOKEN) {
       console.error('Mapbox token not configured');
       return;
     }
@@ -93,6 +95,7 @@ export function FarmMap({
 
     map.current = new mapboxgl.Map({
       container: mapContainer.current,
+      accessToken: MAPBOX_ACCESS_TOKEN,
       style: 'mapbox://styles/mapbox/satellite-v9',
       center: center,
       zoom: initialZoom || 10
@@ -108,10 +111,10 @@ export function FarmMap({
         },
         defaultMode: 'draw_polygon'
       });
-      map.current.addControl(draw.current);
+      map.current!.addControl(draw.current);
     }
 
-    map.current.on('load', () => {
+    map.current!.on('load', () => {
       setIsMapLoaded(true);
     });
 
@@ -138,14 +141,14 @@ export function FarmMap({
         }
       };
 
-      map.current.on('draw.create', handleDrawUpdate);
-      map.current.on('draw.update', handleDrawUpdate);
-      map.current.on('draw.delete', handleDrawUpdate);
+      map.current!.on('draw.create', handleDrawUpdate);
+      map.current!.on('draw.update', handleDrawUpdate);
+      map.current!.on('draw.delete', handleDrawUpdate);
     }
 
     // Add click handler for location selection (when in view mode with onMapClick)
     if (mode === 'view' && onMapClick) {
-      map.current.on('click', (e: mapboxgl.MapMouseEvent) => {
+      map.current!.on('click', (e: mapboxgl.MapMouseEvent) => {
         // Only trigger if clicking directly on the map canvas, not on markers/controls/popups
         const target = e.originalEvent.target as HTMLElement;
         
@@ -422,7 +425,7 @@ export function FarmMap({
       }
   }, [farm, farms, trees, isMapLoaded, onTreeClick, mode]);
 
-  if (!mapboxgl.accessToken) {
+  if (!MAPBOX_ACCESS_TOKEN) {
     return (
       <div style={{ padding: '20px', textAlign: 'center', color: '#ef4444' }}>
         Mapbox token not configured. Please set VITE_MAPBOX_API_KEY in your environment variables.

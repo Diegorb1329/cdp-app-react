@@ -62,6 +62,54 @@ function WalletPage() {
             <EOATransaction balance={formattedBalance} onSuccess={getBalance} />
           </div>
         )}
+        {/* Earnings section */}
+        <div className="wallet-card">
+          <div className="balance-container">
+            <h2 className="card-title">Total Earnings</h2>
+            <div className="user-balance">
+              <span className="flex-row-container">
+                <span style={{ fontSize: '2.5rem', fontWeight: 600, color: '#000' }}>347</span>
+                <span style={{ fontSize: '1.5rem', fontWeight: 500, color: '#666', marginLeft: '0.5rem' }}>USD</span>
+              </span>
+            </div>
+            <p className="balance-info" style={{ marginTop: '1rem', color: '#666' }}>
+              You have made 347 USD from your coffee production
+            </p>
+          </div>
+        </div>
+        {/* Oframp box */}
+        <div className="wallet-card">
+          <div className="balance-container">
+            <h2 className="card-title">Offramp</h2>
+            <p className="balance-info" style={{ marginTop: '1rem', marginBottom: '1.5rem', color: '#666' }}>
+              Convert your crypto earnings to fiat currency
+            </p>
+            <button
+              style={{
+                padding: '0.875rem 2rem',
+                backgroundColor: '#8B6F47',
+                color: '#fff',
+                border: 'none',
+                borderRadius: '2rem',
+                fontSize: '1rem',
+                fontWeight: 500,
+                cursor: 'pointer',
+                transition: 'all 0.2s',
+                width: '100%'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = '#6F5B3A';
+                e.currentTarget.style.transform = 'translateY(-1px)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = '#8B6F47';
+                e.currentTarget.style.transform = 'translateY(0)';
+              }}
+            >
+              Start Offramp
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   );

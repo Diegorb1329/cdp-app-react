@@ -18,7 +18,11 @@ export default defineConfig({
   resolve: {
     alias: {
       process: 'process/browser',
+      // Ensure ajv resolves correctly for @hypercerts-org/sdk
+      'ajv/dist/ajv': 'ajv/dist/ajv.js',
     },
+    // Handle mapbox-gl default export
+    dedupe: ['mapbox-gl'],
   },
   build: {
     rollupOptions: {
@@ -84,8 +88,17 @@ export default defineConfig({
   },
   // Optimize dependencies
   optimizeDeps: {
-    include: ['react', 'react-dom', 'react-router-dom'], // Pre-bundle these
-    exclude: ['@hypercerts-org/sdk', 'mapbox-gl'], // Exclude large libs from pre-bundling (they'll be lazy loaded)
+    include: [
+      'react', 
+      'react-dom', 
+      'react-router-dom', 
+      'mapbox-gl',
+      '@hypercerts-org/sdk', // Include to fix ajv import issues
+    ], // Pre-bundle these
+    esbuildOptions: {
+      // Handle mapbox-gl as CommonJS with default export
+      mainFields: ['module', 'main'],
+    },
   },
 });
 
